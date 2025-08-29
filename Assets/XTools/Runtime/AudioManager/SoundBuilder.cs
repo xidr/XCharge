@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace XTools {
     public class SoundBuilder {
+
         readonly SoundModel _soundModel;
         Vector3 _position = Vector3.zero;
         bool _randomPitch;
@@ -14,6 +15,7 @@ namespace XTools {
             _position = position;
             return this;
         }
+
 
         public SoundBuilder WithRandomPitch() {
             _randomPitch = true;
@@ -28,7 +30,7 @@ namespace XTools {
 
             if (!_soundModel.CanPlaySound(soundData)) return null;
 
-            SoundEmitter soundEmitter = _soundModel.Get();
+            var soundEmitter = _soundModel.Get();
             soundEmitter.Initialize(soundData, _soundModel);
             soundEmitter.transform.position = _position;
             soundEmitter.transform.parent = _soundModel.transform;
@@ -41,5 +43,6 @@ namespace XTools {
 
             return soundEmitter;
         }
+
     }
 }

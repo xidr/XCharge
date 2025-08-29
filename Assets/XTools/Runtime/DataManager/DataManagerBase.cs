@@ -6,24 +6,25 @@ using UnityEngine.AddressableAssets;
 
 namespace XTools {
     public abstract class DataManagerBase : IDisposable {
-        const string GAME_DATA_GROUP_LABEL = "GameData";
-        
-        List<ScriptableObject> _data = new();
 
-        EventBinding<UIAudioSliderChanged> _uiAudioSliderChangedBinding;
+        const string GAME_DATA_GROUP_LABEL = "GameData";
+
+        readonly List<ScriptableObject> _data = new();
+
+        readonly EventBinding<UIAudioSliderChanged> _uiAudioSliderChangedBinding;
 
         public DataManagerBase() {
             // ScriptableObject[] loaded = Resources.LoadAll<ScriptableObject>("GameData");
             //
             // _data.AddRange(loaded);
-            
+
             // Load the entire GameData group synchronously
 
 
             // // Don't forget to release
             // Addressables.Release(handle);
 
-            
+
             // ServiceLocator.Global.Register(typeof(IVisitorDataSupplier), this);
 
             LoadDataClasses();
@@ -41,24 +42,20 @@ namespace XTools {
         }
 
         void LoadDataClasses() {
-            var handle = Addressables.LoadAssetsAsync<ScriptableObject>(GAME_DATA_GROUP_LABEL, null);
+            var handle = Addressables.LoadAssetsAsync<ScriptableObject>(GAME_DATA_GROUP_LABEL);
             var loaded = handle.WaitForCompletion();
-            
+
             _data.AddRange(loaded);
-            
-            
-            
+
+
             handle.Release();
-            
         }
 
         public virtual T GetData<T>() where T : ScriptableObject {
-            ScriptableObject foundData = _data.FirstOrDefault(x => x.GetType() == typeof(T));
+            var foundData = _data.FirstOrDefault(x => x.GetType() == typeof(T));
 
-            T foundDataT = foundData as T;
-            if (foundDataT == null) {
-                Debug.LogError(typeof(T).Name + " could not be loaded");
-            }
+            var foundDataT = foundData as T;
+            if (foundDataT == null) Debug.LogError(typeof(T).Name + " could not be loaded");
 
             return foundDataT;
         }
@@ -78,5 +75,6 @@ namespace XTools {
 
             EventBus<DataChanged>.Raise(new DataChanged());
         }
+
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.Audio;
 namespace XTools {
     [Serializable]
     public class SoundData {
+
         // public AudioClip clip;
         public List<AudioClip> clips;
         public AudioMixerGroup mixerGroup;
@@ -34,7 +35,8 @@ namespace XTools {
 
         public AudioRolloffMode rolloffMode = AudioRolloffMode.Logarithmic;
 
-        public bool shouldPlayOnLoop = false;
-        public Transform objectToStick = null;
+        public bool shouldPlayOnLoop;
+        public Transform objectToStick;
+
     }
 }

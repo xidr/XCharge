@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace XTools {
     [RequireComponent(typeof(AudioSource))]
     public class SoundEmitter : MonoBehaviour {
+
         public SoundData soundData { get; private set; }
         public LinkedListNode<SoundEmitter> node { get; set; }
 
@@ -14,6 +16,11 @@ namespace XTools {
 
         void Awake() {
             _audioSource = gameObject.GetOrAdd<AudioSource>();
+        }
+
+        void Update() {
+            if (_playingCoroutine != null && soundData.objectToStick)
+                transform.position = soundData.objectToStick.transform.position;
         }
 
         public void Initialize(SoundData data, SoundModel model) {
@@ -76,5 +83,6 @@ namespace XTools {
         public void WithRandomPitch(float min = -0.1f, float max = 0.1f) {
             _audioSource.pitch += Random.Range(min, max);
         }
+
     }
 }

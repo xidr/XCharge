@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace XTools {
     internal class MusicModel {
+
         float _fading;
         AudioSource _current;
         AudioSource _previous;
@@ -78,8 +79,11 @@ namespace XTools {
         }
 
         public struct MusicSourcesPair {
+
             public AudioSource sourceOne;
             public AudioSource sourceTwo;
+
         }
+
     }
 }

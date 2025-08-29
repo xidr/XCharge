@@ -2,16 +2,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Pool;
-using UnityEngine.Serialization;
 
 namespace XTools {
     public class SoundModel : MonoBehaviour {
+
         public readonly LinkedList<SoundEmitter> frequentSoundEmitters = new();
-        
+
         public AudioMixer mixer;
         [HideInInspector]
-        public bool initialized = false;
-        
+        public bool initialized;
+
         [SerializeField] SoundEmitter _soundEmitterPrefab;
         [SerializeField] bool _collectionCheck = true;
         [SerializeField] int _defaultCapacity = 10;
@@ -27,7 +27,7 @@ namespace XTools {
             initialized = true;
         }
 
-        public SoundBuilder CreateSoundBuilder() => new SoundBuilder(this);
+        public SoundBuilder CreateSoundBuilder() => new(this);
 
         public bool CanPlaySound(SoundData data) {
             if (!data.frequentSound) return true;
@@ -36,17 +36,19 @@ namespace XTools {
                 try {
                     frequentSoundEmitters.First.Value.Stop();
                     return true;
-                } catch {
+                }
+                catch {
                     Debug.Log("SoundEmitter is already released");
                 }
+
                 return false;
             }
+
             return true;
         }
 
         public SoundEmitter Get() {
-            if (!initialized)
-                return null;
+            if (!initialized) return null;
             return _soundEmitterPool.Get();
         }
 
@@ -55,9 +57,7 @@ namespace XTools {
         }
 
         public void StopAll() {
-            foreach (var soundEmitter in _activeSoundEmitters) {
-                soundEmitter.Stop();
-            }
+            foreach (var soundEmitter in _activeSoundEmitters) soundEmitter.Stop();
 
             frequentSoundEmitters.Clear();
         }
@@ -89,6 +89,7 @@ namespace XTools {
                 frequentSoundEmitters.Remove(soundEmitter.node);
                 soundEmitter.node = null;
             }
+
             soundEmitter.gameObject.SetActive(false);
             _activeSoundEmitters.Remove(soundEmitter);
         }
@@ -96,5 +97,6 @@ namespace XTools {
         void OnDestroyPoolObject(SoundEmitter soundEmitter) {
             Destroy(soundEmitter.gameObject);
         }
+
     }
 }
